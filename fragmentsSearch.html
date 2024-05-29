@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Finding All Instances of a Pattern</title>
+
+    <style>
+        .found {
+            background-color: #ff0;
+        } 
+        body {
+            margin: 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 350px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Finding All Instances of a Pattern</h1>
+    <form id="textsearch">
+        <textarea id="incoming">
+        </textarea>
+        <p>
+            Search pattern: <input id="pattern" type="text">
+        </p>
+    </form>
+    <button id="searchSubmit">Search for pattern</button>
+    <div id="searchResult"></div>
+
+    <script>
+        document.getElementById("searchSubmit").onclick = function() {
+            // Получаем шаблон для поиска
+            const pattern = document.getElementById('pattern').value;
+            const regex = new RegExp(pattern, 'g');
+
+            // Получаем текст для поиска
+            const searchText = document.getElementById('incoming').value;
+
+            let highlightedResult = "<pre>";
+            let startPosition = 0;
+            let endPosition = 0;
+
+            // Находим все совпадения, формируем результат
+            const matches = searchText.matchAll(regex);
+            for (const match of matches) {
+                endPosition = match.index;
+
+                // Берем всю строку до этого совпадения
+                // присоединяем к предыдущему фрагменту
+                highlightedResult += searchText.slice()(startPosition, endPosition);
+
+                //Добавляем найденный фрагмент
+                // с CSS-классом для форматирования
+                highlightedResult += "<span class='found'>" + match[0] + "</span>";
+                startPosition = endPosition + match[0].length;
+            }
+
+            // Завершаем результирующую строку
+            highlightedResult += searchText.slice(startPosition);
+            highlightedResult += "</pre>";
+            
+            // Выводим текст с выделенными результатами поиска на страницу
+            document.getElementById("searchResult").innerHTML =
+            highlightedResult;
+        }
+    </script>
+</body>
+</html>
